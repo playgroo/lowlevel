@@ -598,4 +598,4 @@ if __name__ == "__main__":
     if found_error:
         print ('Not all tests have been passed')
     else:
-        print ( "Good work, all tests are passed", 'green')
+        print ('Good work, all tests are passed')
