@@ -483,49 +483,10 @@ tests=[ Test('string_length',
         jmp sys_exit""", 
         lambda i,o,r: (r == 4) # ERR_SYS_STAT equ 4
         ),
-
-        Test('math_fact',
-            lambda v: """section .data
-        filename: db '""" + v + """', 0
-        section .text
-        %include "lib.inc"
-        global _start 
-        _start:
-        """ + before_call + """
-        mov rdi, filename
-        call math_fact
-        """ + after_call + """
-        xor rdi, rax
-        jmp sys_exit""", 
-        lambda i,o,r: o == str(math.factorial(int(Path(i).read_text())))
-        ),
-
-        Test('math_is_prime',
-            lambda v: """section .data
-        filename: db '""" + v + """', 0
-        section .text
-        %include "lib.inc"
-        global _start 
-        _start:
-        """ + before_call + """
-        mov rdi, filename
-        call math_is_prime
-        """ + after_call + """
-        xor rdi, rax
-        jmp sys_exit""", 
-        lambda i,o,r: o == str(0)
-        )
-
 ]
 
-"""
-; args - rdi7, rsi6, rdx2, rcx1 (func) / r10 (syscall), r8, r9
-; restore   (7) - rbx3, rsp4, rbp5, r12, r13, r14, r15
-; save regs (9) - rax0, rcx1, rdx2, rsi6, rdi7, r8, r9, r10, r11
-"""
-
 inputs= {'string_length' 
-        : [ 'asdkbasdka', 'qwe qweqe qe', '', '123' ],
+         : [ 'asdkbasdka', 'qwe qweqe qe', ''],
          'print_string'  
          : ['ashdb asdhabs dahb', ' ', ''],
          'string_copy'   
@@ -541,41 +502,31 @@ inputs= {'string_length'
          'print_int'     
          : ['-1', '-12345234121', '0', '123412312', '123123'],
          'read_char'            
-         : ['-1', '-1234asdasd5234121', '', '   ', '\t   ', 'hey ya ye ya', 'hello world' ],
+         : ['-1', '-1234asdasd5234121', '', '   ', '\t   ', 'hey ya ye ya', 'hello world'],
          'read_word'            
-         : ['-1', '-1234asdasd5234121', '', '   ', '\t   ', 'hey ya ye ya', 'hello world' ],
+         : ['-1', '-1234asdasd5234121', '', '   ', '\t   ', 'hey ya ye ya', 'hello world'],
          'read_word_length'     
-         : ['-1', '-1234asdasd5234121', '', '   ', '\t   ', 'hey ya ye ya', 'hello world' ],
+         : ['-1', '-1234asdasd5234121', '', '   ', '\t   ', 'hey ya ye ya', 'hello world'],
          'read_word_too_long'     
-         : [ 'asdbaskdbaksvbaskvhbashvbasdasdads wewe', 'short' ],
+         : [ 'asdbaskdbaksvbaskvhbashvbasdasdads wewe', 'short'],
          'parse_uint'           
-         : ["0", "1234567890987654321hehehey", "1", "9223372036854775807" ],
+         : ["0", "1234567890987654321hehehey", "1", "9223372036854775807"],
          'parse_uint_huge_number'           
          : ["012345678909876543219223372036854775807" ],
          'parse_int'                
-         : ["0", "1234567890987654321hehehey", "-1dasda", "-eedea", "-123123123", "1" ],
+         : ["0", "1234567890987654321hehehey", "-1dasda", "-eedea", "-123123123", "1"],
          'parse_int_huge_number'                
-         : ["-12345678909876543219223372036854775807" ],
+         : ["-12345678909876543219223372036854775807"],
          'string_equals'            
-         : ['ashdb asdhabs dahb', ' ', '', "asd" ],
+         : ['ashdb asdhabs dahb', ' ', '', "asd"],
          'string_equals_not_equals' 
-         : ['ashdb asdhabs dahb', ' ', '', "asd" ],
+         : ['ashdb asdhabs dahb', ' ', '', "asd"],
          'get_file_size'
          : ['/bin/bash', '/bin/su'],
          'print_file'
-         : ['/etc/hostname' ,'./input.txt'],
+         : ['/etc/hostname'],
          'print_file_not_exist'
          : ['/input.txt'],
-         'math_fact'
-         : ['./input.txt'],
-         'math_is_prime'
-         : ['./input.txt'],
-         'math_sum_digits'
-         : ['./input.txt'],
-         'math_fib'
-         : ['./input.txt'],
-         'math_is_fib'
-         : ['./input.txt']
 }
               
 if __name__ == "__main__":

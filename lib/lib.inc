@@ -1,6 +1,4 @@
 ; Assembler library of common functions
-; copyleft kcdas@itkcon.com
-; file ver 20180108
 ; args - rdi7, rsi6, rdx2, rcx1 (func) / r10 (syscall), r8, r9
 ; restore   (7) - rbx3, rsp4, rbp5, r12, r13, r14, r15
 ; save regs (9) - rax0, rcx1, rdx2, rsi6, rdi7, r8, r9, r10, r11
@@ -207,9 +205,6 @@ ret
 process_file_data:
     ; rdi7 - filename to be printed
     ; rsi6 - max file length for printing
-    ; [process_file_func]:
-    ;   1 - print file
-    ;   2 - math_factorial
     ; map file to memory
     mov [file_name], r7
     mov qword [file_size], 0
@@ -221,10 +216,6 @@ process_file_data:
     jne .error
     cmp qword [process_file_func], 1
     je print_file_func
-    cmp qword [process_file_func], 2
-    je math_fact_func
-    cmp qword [process_file_func], 3
-    je math_is_prime_func
 .munmap:
     ; unmap file from memory
     mov r7, [file_mem_addr]
@@ -268,68 +259,6 @@ print_file_func:
     call sys_write
     cmp r0, [file_size] ; bytes written
     jne process_file_data.err_write
-    jmp process_file_data.munmap
-
-math_fact:
-    mov qword [process_file_func], 2
-    jmp process_file_data
-math_fact_func:
-    ; calc factorial
-    mov r7, [file_mem_addr]
-    call parse_uint
-    test r0, r0
-    jz .print_fact
-    mov r6, r0
-    dec r6
-  .fact:
-    test r6, r6
-    jz .print_fact
-    mul r6
-    test r2, r2
-    jnz .err_too_big
-    dec r6
-    jmp .fact
-  .print_fact:
-    mov r7, r0
-    call print_int
-    jmp .done
-  .err_too_big:
-    mov qword [errno], ERR_NUMBER_TOO_BIG_FOR_REGISTER
-  .done:
-    jmp process_file_data.munmap
-
-math_is_prime:
-    mov qword [process_file_func], 3
-    jmp process_file_data
-math_is_prime_func:
-    ; calc factorial
-    mov r7, [file_mem_addr]
-    call parse_uint
-    test r0, r0
-    jz .done
-    mov r1, r0
-    xor r2, r2
-    mov r6, r0
-    dec r6
-  .div:
-    cmp r6, 1
-    je .prime
-    div r6
-    test r2, r2
-    jz .not_prime
-    dec r6
-    mov r0, r1
-    xor r2, r2
-    jmp .div
-  .prime:
-    xor r0, r0
-    jmp .done
-  .not_prime:
-    xor r0, r0
-    inc r0
-  .done:
-    mov r7, r0
-    call print_int
     jmp process_file_data.munmap
 
 print_uint:
@@ -524,5 +453,3 @@ string_copy:
     pop r0
 .ret:
 ret
-
-
