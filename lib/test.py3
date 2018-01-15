@@ -1,4 +1,4 @@
-#!/usr/local/bin/python3
+#!/usr/bin/python3
 
 import logging
 import os
@@ -6,7 +6,7 @@ import sys
 import subprocess
 import re
 import math
-from pathlib import Path
+from pathlib2 import Path
 from subprocess import CalledProcessError, Popen, PIPE
 
 #-------helpers---------------
