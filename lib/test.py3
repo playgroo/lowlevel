@@ -41,11 +41,11 @@ def first_or_empty( s ):
 #-----------------------------
 
 def compile( fname, text ):
-    f = open( fname + '.asm', 'w')
+    f = open( fname + '.test.asm', 'w')
     f.write( text )
     f.close()
 
-    if subprocess.call( ['nasm', '-f', 'elf64', fname + '.asm', '-o', fname+'.o'] ) == 0 and subprocess.call( ['ld', '-o' , fname+'.exec', fname+'.o'] ) == 0:
+    if subprocess.call( ['nasm', '-f', 'elf64', fname + '.test.asm', '-o', fname+'.test.o'] ) == 0 and subprocess.call( ['ld', '-o' , fname+'.test.run', fname+'.test.o'] ) == 0:
              print (' ', fname, ': compiled')
              return True
     else: 
@@ -56,7 +56,7 @@ def compile( fname, text ):
 def launch( fname, seed = '' ):
     output = ''
     try:
-        p = Popen(['./'+fname+'.exec'], shell=None, stdin=PIPE, stdout=PIPE)
+        p = Popen(['./'+fname+'.test.run'], shell=None, stdin=PIPE, stdout=PIPE)
         (output, err) = p.communicate(input=seed.encode())
         return (output.decode(), p.returncode)
     except CalledProcessError as exc:
@@ -69,9 +69,9 @@ def launch( fname, seed = '' ):
 def test_asm( text, name = 'dummy',  seed = '' ):
     if compile( name, text ):
         r = launch( name, seed )
-        #os.remove( name + '.exec' )
-        #os.remove( name + '.o' )
-        #os.remove( name + '.asm' )
+        #os.remove( name + '.test.asm' )
+        #os.remove( name + '.test.o' )
+        #os.remove( name + '.test.run' )
         return r 
     return None 
 
