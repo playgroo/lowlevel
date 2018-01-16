@@ -6,7 +6,7 @@ import sys
 import subprocess
 import re
 import math
-from pathlib2 import Path
+from pathlib import Path
 from subprocess import CalledProcessError, Popen, PIPE
 
 #-------helpers---------------
